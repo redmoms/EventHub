@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event index{% endblock %}
+
+{% block body %}
+    <h1>Event index</h1>
+    {% if is_granted('ROLE_ADMIN') %}
+    {{user.email}}
+    {% endif %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.name }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.date ? event.date|date('d-m-Y H:i:s') : '' }}</td>
+                <td>{{ event.location }}</td>                
+                <td>                
+                    <a class="btn btn-primary" href="{{ path('app_event_show', {'id': event.id}) }}">show</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-primary" href="{{ path('app_event_edit', {'id': event.id}) }}">edit</a>
+                    {% endif %}
+                </td>                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-primary" href="{{ path('app_event_new') }}">Create new</a>
+    {% endif %}
+    <div class="navigation">
+    {{ knp_pagination_render(events, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+</div>
+{% endblock %}

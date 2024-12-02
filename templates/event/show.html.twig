@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event{% endblock %}
+
+{% block body %}
+    <h1>Event</h1>
+    {{ dump(event.user) }}
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ event.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ event.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ event.description }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ event.date ? event.date|date('d-m-Y H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td>{{ event.location }}</td>
+            </tr>
+            <tr>
+                <th>participants</th>
+                {% for users in event.user %}
+                    <td>{{ users.email }}</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{{ path('app_event_index') }}">back to list</a>
+    {% if is_granted('ROLE_USER') %}
+        <a class="btn btn-primary" href="{{ path('app_event_register', {'id': event.id}) }}">s'inscrire</a>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-primary" href="{{ path('app_event_edit', {'id': event.id}) }}">edit</a>
+
+        {{ include('event/_delete_form.html.twig') }}
+    {% endif %}
+{% endblock %}
